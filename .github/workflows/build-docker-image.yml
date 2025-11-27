@@ -1,4 +1,3 @@
-# .github/workflows/publish-docker-image.yml
 name: Publish Multi-Arch Docker Image to Docker Hub
 
 on:
@@ -39,11 +38,13 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: jerryscript/uptime-server-monitor
+          
           tags: |
             type=raw,value=latest,enable=${{ matrix.variant.name == 'alpine' }}
             type=raw,value=latest-alpine,enable=${{ matrix.variant.name == 'alpine' }}
             type=raw,value=latest-debian,enable=${{ matrix.variant.name == 'debian' }}
             type=semver,pattern={{version}}-{{flavor}}
+          
           flavor:
             suffix: -${{ matrix.variant.name }}
             latest: false
