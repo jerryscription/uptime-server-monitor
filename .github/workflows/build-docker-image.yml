@@ -39,12 +39,12 @@ jobs:
         with:
           images: jerryscript/uptime-server-monitor
           tags: |
-            # 规则 1: Alpine 版本获取 'latest' 和 'latest-alpine' 标签
+            # Alpine 版本获取 latest 和 latest-alpine 标签
             type=raw,value=latest,enable=${{ matrix.variant.name == 'alpine' }}
             type=raw,value=latest-alpine,enable=${{ matrix.variant.name == 'alpine' }}
-            # 规则 2: Debian 版本获取 'latest-debian' 标签
+            # Debian 版本获取 latest-debian 标签
             type=raw,value=latest-debian,enable=${{ matrix.variant.name == 'debian' }}
-            # 规则 3 (推荐): 为 Git 标签创建版本化标签, e.g., v1.0.0-alpine
+            # Git 标签
             type=semver,pattern={{version}}-{{flavor}}
           flavor:
             - suffix=-${{ matrix.variant.name }}
