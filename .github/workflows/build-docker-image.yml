@@ -1,3 +1,4 @@
+# .github/workflows/publish-docker-image.yml
 name: Publish Multi-Arch Docker Image to Docker Hub
 
 on:
@@ -39,16 +40,13 @@ jobs:
         with:
           images: jerryscript/uptime-server-monitor
           tags: |
-            # Alpine 版本获取 latest 和 latest-alpine 标签
             type=raw,value=latest,enable=${{ matrix.variant.name == 'alpine' }}
             type=raw,value=latest-alpine,enable=${{ matrix.variant.name == 'alpine' }}
-            # Debian 版本获取 latest-debian 标签
             type=raw,value=latest-debian,enable=${{ matrix.variant.name == 'debian' }}
-            # Git 标签
             type=semver,pattern={{version}}-{{flavor}}
           flavor:
-            - suffix=-${{ matrix.variant.name }}
-            - latest=false
+            suffix: -${{ matrix.variant.name }}
+            latest: false
 
       - name: Build and push multi-platform image for ${{ matrix.variant.name }}
         uses: docker/build-push-action@v5
