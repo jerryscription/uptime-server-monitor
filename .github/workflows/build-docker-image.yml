@@ -45,9 +45,9 @@ jobs:
             type=raw,value=latest-debian,enable=${{ matrix.variant.name == 'debian' }}
             type=semver,pattern={{version}}-{{flavor}}
           
-          flavor:
-            suffix: -${{ matrix.variant.name }}
-            latest: false
+          flavor: |
+            suffix=-${{ matrix.variant.name }}
+            latest=false
 
       - name: Build and push multi-platform image for ${{ matrix.variant.name }}
         uses: docker/build-push-action@v5
