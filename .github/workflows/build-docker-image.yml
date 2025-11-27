@@ -44,7 +44,7 @@ jobs:
             type=raw,value=latest-alpine,enable=${{ matrix.variant.name == 'alpine' }}
             type=raw,value=latest-debian,enable=${{ matrix.variant.name == 'debian' }}
             type=semver,pattern={{version}}-{{flavor}}
-          
+            
           flavor: |
             suffix=-${{ matrix.variant.name }}
             latest=false
