@@ -1,0 +1,61 @@
+name: Publish Multi-Arch Docker Image to Docker Hub
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        variant:
+          - name: debian
+            dockerfile: Dockerfile.debian
+          - name: alpine
+            dockerfile: Dockerfile.alpine
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: jerryscript/uptime-server-monitor
+          tags: |
+            # 规则 1: Alpine 版本获取 'latest' 和 'latest-alpine' 标签
+            type=raw,value=latest,enable=${{ matrix.variant.name == 'alpine' }}
+            type=raw,value=latest-alpine,enable=${{ matrix.variant.name == 'alpine' }}
+            # 规则 2: Debian 版本获取 'latest-debian' 标签
+            type=raw,value=latest-debian,enable=${{ matrix.variant.name == 'debian' }}
+            # 规则 3 (推荐): 为 Git 标签创建版本化标签, e.g., v1.0.0-alpine
+            type=semver,pattern={{version}}-{{flavor}}
+          flavor:
+            - suffix=-${{ matrix.variant.name }}
+            - latest=false
+
+      - name: Build and push multi-platform image for ${{ matrix.variant.name }}
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ${{ matrix.variant.dockerfile }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
