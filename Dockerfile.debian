@@ -1,8 +1,8 @@
 FROM debian:12
 
 
+# 安装所有必要的依赖
 RUN apt-get update && apt-get install -y \
-    cron \
     curl \
     procps \
     bc \
@@ -12,18 +12,15 @@ RUN apt-get update && apt-get install -y \
 # 创建工作目录
 WORKDIR /app
 
-# 复制脚本和 crontab 文件到容器中
+# 复制脚本到容器中
 COPY monitor.sh .
-COPY crontab.txt .
+COPY monitor-daemon.sh .
 
-# 给监控脚本添加执行权限
-RUN chmod +x monitor.sh
-
-# 将我们的 crontab 文件应用到系统中
-RUN crontab crontab.txt
+# 给脚本添加执行权限
+RUN chmod +x monitor.sh monitor-daemon.sh
 
 # 创建一个日志文件，让 cron 可以写入
 RUN touch /var/log/cron.log
 
-# 启动 cron 服务并保持在前台运行
-CMD cron && tail -f /var/log/cron.log
+# 启动监控守护进程
+CMD ["/app/monitor-daemon.sh"]

@@ -3,26 +3,20 @@ FROM alpine:latest
 
 # 安装所有必要的依赖
 # procps 提供了 top 和 free 命令
-# dcron 是 Alpine 使用的 cron 实现
-RUN apk add --no-cache dcron curl procps bc jq
+RUN apk add --no-cache curl procps bc jq
 
 # 创建工作目录
 WORKDIR /app
 
-# 复制脚本和 crontab 文件到容器中
+# 复制脚本到容器中
 COPY monitor.sh .
-COPY crontab.txt .
+COPY monitor-daemon.sh .
 
-# 给监控脚本添加执行权限
-RUN chmod +x monitor.sh
-
-# 将我们的 crontab 文件应用到系统中
-# 在 Alpine 中，这会在 /var/spool/cron/crontabs/ 目录下创建 root 文件
-RUN crontab crontab.txt
+# 给脚本添加执行权限
+RUN chmod +x monitor.sh monitor-daemon.sh
 
 # 创建一个日志文件，让 cron 可以写入
 RUN touch /var/log/cron.log
 
-# 启动 Alpine 的 cron 服务 (crond) 并保持在前台运行
-# -f 标志让它在前台运行，这对于容器至关重要
-CMD crond -f && tail -f /var/log/cron.log
+# 启动监控守护进程
+CMD ["/app/monitor-daemon.sh"]
