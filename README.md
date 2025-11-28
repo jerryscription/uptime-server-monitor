@@ -70,6 +70,6 @@ docker run -d \
 
 ## Docker Images
 
-- `jerryscript/uptime-server-monitor:latest` (Alpine-based, smaller)
-- `jerryscript/uptime-server-monitor:latest-alpine` (Alpine-based)
-- `jerryscript/uptime-server-monitor:latest-debian` (Debian-based)
+- `jerryscript/uptime-server-monitor:latest` (Alpine)
+- `jerryscript/uptime-server-monitor:latest-alpine`
+- `jerryscript/uptime-server-monitor:latest-debian`
