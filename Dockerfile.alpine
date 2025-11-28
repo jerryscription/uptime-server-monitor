@@ -3,7 +3,8 @@ FROM alpine:latest
 
 # 安装所有必要的依赖
 # procps 提供了 top 和 free 命令
-RUN apk add --no-cache curl procps bc jq
+# bash 用于脚本执行
+RUN apk add --no-cache bash curl procps bc jq
 
 # 创建工作目录
 WORKDIR /app
@@ -15,12 +16,9 @@ COPY monitor-daemon.sh .
 # 给脚本添加执行权限
 RUN chmod +x monitor.sh monitor-daemon.sh
 
-# 调试：验证文件是否存在
-RUN ls -la /app/
-
 # 创建日志文件
 RUN touch /var/log/monitor.log
 
 # 启动监控守护进程
-ENTRYPOINT ["/bin/sh"]
+ENTRYPOINT ["/bin/bash"]
 CMD ["/app/monitor-daemon.sh"]

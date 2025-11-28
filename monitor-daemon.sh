@@ -25,22 +25,6 @@ echo "Starting monitoring daemon with interval: ${MONITOR_INTERVAL} seconds"
 echo "Push URL configured: ${UPTIME_KUMA_PUSH_URL%/*}/..."
 echo "Press Ctrl+C to stop..."
 
-# 调试：检查文件是否存在
-echo "Debug: Checking files in /app:"
-ls -la /app/
-echo "Debug: Checking if monitor.sh exists:"
-if [ -f "/app/monitor.sh" ]; then
-    echo "monitor.sh found and is a file"
-else
-    echo "monitor.sh NOT found or not a file"
-fi
-
-if [ -x "/app/monitor.sh" ]; then
-    echo "monitor.sh is executable"
-else
-    echo "monitor.sh is NOT executable"
-fi
-
 # 信号处理 - 优雅退出
 cleanup() {
     echo ""

@@ -19,9 +19,6 @@ COPY monitor-daemon.sh .
 # 给脚本添加执行权限
 RUN chmod +x monitor.sh monitor-daemon.sh
 
-# 调试：验证文件是否存在
-RUN ls -la /app/
-
 # 创建日志文件
 RUN touch /var/log/monitor.log
 
